@@ -38,8 +38,15 @@ print ("Hello world")
 
 #  print ("Hello World")
 
+''' Part 3: Printing numbers and Text '''
+# As we already know print can use text
+print("What is the answer to life?")
+# The print can also use numbers
+print(42)
+print(3.56)
 
-''' Part 3: Comments '''
+
+''' Part 4: Comments '''
 
 # If you haven't noticed by now, you can put a '#' before a line to tell
 # Python to ignore that line. Lines that start with a '#' are called comment lines or
