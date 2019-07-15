@@ -43,7 +43,6 @@ def init_groups():
 def init_background():
     background = pygame.Surface(screen.get_size())
     background.fill((128, 128, 255))
-
     font = pygame.font.Font('freesansbold.ttf', 32)
     text = font.render("GAME OVER (press space to play again)", True, (255, 255, 255), (128, 128, 255))
     textRect = text.get_rect()

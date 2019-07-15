@@ -8,7 +8,6 @@ class Cloud(pygame.sprite.Sprite):
         super(Cloud, self).__init__()
         self.image = pygame.transform.scale(pygame.image.load('./Icons/cloud.png'), (100,100)).convert()
         self.image.set_colorkey((255, 255, 255), RLEACCEL)
-
         self.rect = self.image.get_rect(
             center=(random.randint(820, 900), random.randint(0, 600))
         )
