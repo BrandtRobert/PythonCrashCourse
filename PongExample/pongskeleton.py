@@ -3,6 +3,7 @@ from pygame.locals import *
 from pygame.time import Clock
 import random
 
+''' DONT MESS WITH THIS CODE BELOW '''
 pygame.init()
 clock = Clock()
 
@@ -70,6 +71,9 @@ class Ball(pygame.sprite.Sprite):
 player = Player()
 computer = Computer()
 ball = Ball()
+
+''' DONT MESS WITH THIS CODE ABOVE '''
+
 running = True
 while running:
     for event in pygame.event.get():
