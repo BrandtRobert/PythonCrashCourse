@@ -1,8 +1,8 @@
 # import the pygame module
 import pygame
-from enemy import Enemy
-from player import Player
-from cloud import Cloud
+from ExamplePyGame import Enemy
+from ExamplePyGame import Player
+from ExamplePyGame import Cloud
 from pygame.locals import *
 
 # initialize pygame
@@ -104,6 +104,5 @@ while running:
             screen.blit(entity.image, entity.rect)
     # Update the display
     pygame.display.flip()
-
 
 
