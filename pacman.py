@@ -169,8 +169,8 @@ class Game:
 
     def end(self):
         print("gameover")
-
-        font = pygame.font.Font("FreeSansBold.ttf",32)
+        default_font=pygame.font.get_default_font()
+        font = pygame.font.Font(default_font,32)
         text= font.render("GAME OVER",True,(255,0,0),(0,0,0))
         textRect = text.get_rect(center=(400,400))
         text2 = font.render("Press any key to continue",True,(255,0,0),(0,0,0)) 
@@ -243,3 +243,4 @@ while running:
 
     clock.tick(30)
 
+    
