@@ -5,9 +5,11 @@ import random
 
 pygame.init()
 clock = Clock()
-
+default_font = pygame.font.get_default_font()
+font = pygame.font.Font(default_font, 18)
 
 screen = pygame.display.set_mode((800, 600))
+pygame.display.set_caption('Pong')
 
 
 class Player(pygame.sprite.Sprite):
@@ -20,15 +22,11 @@ class Player(pygame.sprite.Sprite):
         self.rect.y = 0
 
     def move(self, x, y):
+        if y < 0 and self.rect.y < 5:
+            return
+        if y > 0 and self.rect.y > 495:
+            return
         self.rect.move_ip(x, y)
-        if self.rect.x >= 800:
-            self.rect.x = 800
-        if self.rect.x < 0:
-            self.rect.x -= 0
-        if self.rect.y >= 600:
-            self.rect.y = 600
-        if self.rect.y == 0:
-            self.rect.y = 0
 
 
 class Computer(pygame.sprite.Sprite):
@@ -44,6 +42,8 @@ class Computer(pygame.sprite.Sprite):
         direction = 1
         if self.rect.y > ball_y_position:
             direction = -1
+        if self.rect.y + 10 * direction < 0 or self.rect.y + 10 * direction > 500:
+            return
         self.rect.move_ip((0, 10 * direction))
 
 
@@ -59,17 +59,19 @@ class Ball(pygame.sprite.Sprite):
 
     def update(self):
         self.rect.move_ip(tuple(self.direction))
-        if self.rect.y < 0 or self.rect.y > 600:
+        if self.rect.y < 2 or self.rect.y > 580:
             self.direction[1] = - self.direction[1]
 
     def reverse(self):
-        self.direction[0] = -(self.direction[0] - random.randint(0, 5))
+        self.direction[0] = -self.direction[0]
         self.direction[1] = -(self.direction[1] - random.randint(0, 5))
 
 
 player = Player()
 computer = Computer()
 ball = Ball()
+player_points = 0
+computer_points = 0
 running = True
 while running:
     for event in pygame.event.get():
@@ -90,18 +92,24 @@ while running:
         ball.reverse()
 
     if ball.rect.x < -100:
-        print('You lose')
-        running = False
+        computer_points = computer_points + 1
+        ball = Ball()
     if ball.rect.x > 900:
-        print('You win')
-        running = False
+        player_points = player_points + 1
+        ball = Ball()
+
+    score_str = "Your score {} | Computer's Score {}".format(player_points, computer_points)
+    score_text = font.render(score_str, True, (255, 255, 255), None)
+    text_rect = score_text.get_rect()
+    text_rect.center = (400, 580)
 
     screen.fill((0, 0, 0))
     screen.blit(player.surf, player.rect)
     screen.blit(computer.surf, computer.rect)
     screen.blit(ball.surf, ball.rect)
+    screen.blit(score_text, text_rect)
 
     pygame.display.flip()
-    clock.tick(100)
+    clock.tick(30)
 
 pygame.quit()
