@@ -1,3 +1,4 @@
+import time
 import random
 import pygame
 from pygame.locals import *
@@ -105,9 +106,26 @@ class Wall(pygame.sprite.Sprite):
         self.surf.fill((0,255,0))
         self.rect = self.surf.get_rect(center=pos)
 
-    
+class Food(pygame.sprite.Sprite):
+    def __init__(self,pos):
+        super(Food, self).__init__()
+        self.surf = pygame.Surface((80,80))
+        self.surf.fill((255,255,0))
+        self.rect = self.surf.get_rect(center=(pos[0]*100+50,pos[1]*100+50))
+    def move(self):
+        found=False
+        while not found:
+            x = random.randint(0,7)
+            y = random.randint(0,8)
+            if board[y][x]==0:
+                self.pos=(x,y)
+                self.rect.center = (self.pos[0]*100+50,self.pos[1]*100+50)
+                found=True
 class Game:
     def __init__(self):
+        #are the enemies vulnerable?
+        self.vul = False
+        self.vulTime=0
         self.walls=pygame.sprite.Group()
         for i in range(0,8):
             for j in range(0,9):
@@ -115,17 +133,20 @@ class Game:
                     self.walls.add(Wall((i*100+50,j*100+50)))
         self.restart()
         self.gameover=False
- 
+        
     def restart(self):
         '''
             This function defines all of the player and enemy positions
             Try creatingin your own enemies, or changing the posistion of the walls
             Positions are defined using 8x9 grid
         '''
+        self.enemy_count=2
         self.player = Player((1,1))
         enemy1 = Enemy((1,7))
         enemy2 = Enemy((6,7))
-
+        self.food = Food((6,5))
+        self.food_group = pygame.sprite.Group()
+        self.food_group.add(self.food)
         self.enemies = pygame.sprite.Group()
         self.enemies.add(enemy1)
         self.enemies.add(enemy2)
@@ -133,6 +154,7 @@ class Game:
         self.all_movable.add(self.player)
         self.all_movable.add(enemy1)
         self.all_movable.add(enemy2)
+        self.all_movable.add(self.food)
         for wall in self.walls:
             screen.blit(wall.surf,wall.rect)
     
@@ -170,9 +192,9 @@ class Game:
     def update(self):
         if self.gameover:
             return
-        for entity in game.all_movable:
+        for entity in self.all_movable:
             entity.update()
-            if pygame.sprite.spritecollideany(entity, game.walls):
+            if pygame.sprite.spritecollideany(entity, self.walls):
                 entity.hitWall()
     
     def handleKey(self,key):
@@ -198,10 +220,26 @@ while running:
         if event.type==KEYDOWN:
            game.handleKey(event.key)
     game.update()
-    if pygame.sprite.spritecollideany(game.player, game.enemies):
-        game.player.kill()
-        game.end()
-    
+    for enemy in game.enemies:
+        if pygame.sprite.collide_circle(game.player, enemy):
+            if not game.vul:
+                game.player.kill()
+                game.end()
+            else:
+                enemy.kill()
+                game.enemy_count=game.enemy_count-1
+                #check if its 0 and do something
+    if time.time()-game.vulTime>10:
+        game.vul=False
+        game.player.surf.fill((255,255,255))
+
+    if pygame.sprite.spritecollideany(game.player, game.food_group):
+        game.player.surf.fill((0,0,0))
+        game.vul=True
+        game.food.move()
+        game.vulTime=time.time()
+
     game.redraw(screen)
 
     clock.tick(30)
+
