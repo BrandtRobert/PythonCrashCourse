@@ -3,6 +3,7 @@ import pygame
 import random
 from pygame.locals import *
 from pygame.time import Clock
+from pathlib import Path
 
 ''' DONT WRITE ANY CODE BELOW HERE '''
 
