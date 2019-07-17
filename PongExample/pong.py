@@ -5,6 +5,7 @@ import random
 
 pygame.init()
 clock = Clock()
+
 default_font = pygame.font.get_default_font()
 font = pygame.font.Font(default_font, 18)
 
