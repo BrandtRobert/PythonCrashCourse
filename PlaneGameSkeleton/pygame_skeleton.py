@@ -1,8 +1,6 @@
 # import the pygame module
 import pygame
-from enemy import Enemy
-from player import Player
-from cloud import Cloud
+import random
 from pygame.locals import *
 from pygame.time import Clock
 
@@ -17,6 +15,71 @@ screen_height = 800
 screen_width = 600
 screen = pygame.display.set_mode((screen_height, screen_width))
 pygame.display.set_caption("Plane Game")
+
+
+class Cloud(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Cloud, self).__init__()
+        if Path('./Icons/cloud.png').is_file():
+            self.image = pygame.transform.scale(pygame.image.load('./Icons/cloud.png'), (100,100)).convert()
+            self.image.set_colorkey((255, 255, 255), RLEACCEL)
+        else:
+            self.image = pygame.Surface((100, 100))
+            self.image.fill((125, 255, 128))
+        self.rect = self.image.get_rect(
+            center=(random.randint(820, 900), random.randint(0, 600))
+        )
+
+    def update(self, lateral, horizontal):
+        self.rect.move_ip(lateral, horizontal)
+        if self.rect.right < 0:
+            self.kill()
+
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Enemy, self).__init__()
+        if Path('./Icons/small-plane.png').is_file():
+            self.image = pygame.transform.scale(pygame.image.load('./Icons/small-plane.png'), (50, 50)).convert()
+            self.image.set_colorkey((0, 0, 0), RLEACCEL)
+        else:
+            self.image = pygame.Surface((50, 50))
+            self.image.fill((255, 0, 0))
+        self.rect = self.image.get_rect(
+            center=(820, random.randint(0, 600))
+        )
+        # self.speed = random.randint(5, 20)
+
+    def update(self, lateral, horizontal):
+        # self.rect.move_ip(-self.speed, 0)
+        self.rect.move_ip(lateral, horizontal)
+        if self.rect.right < 0:
+            self.kill()
+
+
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Player, self).__init__()
+        if Path('./Icons/jet.png').is_file():
+            self.image = pygame.transform.scale(pygame.image.load('./Icons/jet.png'), (40, 40)).convert()
+            self.image.set_colorkey((255, 255, 255), RLEACCEL)
+        else:
+            self.image = pygame.Surface((50, 50))
+            self.image.fill((255, 255, 255))
+        self.rect = self.image.get_rect()
+        # self.move_size = 10
+
+    def update(self, lateral, vertical):
+        self.rect.move_ip(lateral, vertical)
+        # Keep player on the screen
+        if self.rect.left < 0:
+            self.rect.left = 0
+        elif self.rect.right > 800:
+            self.rect.right = 800
+        if self.rect.top <= 0:
+            self.rect.top = 0
+        elif self.rect.bottom >= 600:
+            self.rect.bottom = 600
 
 
 def start_over():
