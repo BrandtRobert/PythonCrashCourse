@@ -19,7 +19,7 @@ class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super(Cloud, self).__init__()
         if Path('cloud.png').is_file():
-            self.image = pygame.transform.scale(pygame.image.load('./Icons/cloud.png'), (100,100)).convert()
+            self.image = pygame.transform.scale(pygame.image.load('cloud.png'), (100,100)).convert()
             self.image.set_colorkey((255, 255, 255), RLEACCEL)
         else:
             self.image = pygame.Surface((100, 100))
@@ -41,7 +41,7 @@ class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
         if Path('small-plane.png').is_file():
-            self.image = pygame.transform.scale(pygame.image.load('./Icons/small-plane.png'), (50, 50)).convert()
+            self.image = pygame.transform.scale(pygame.image.load('small-plane.png'), (50, 50)).convert()
             self.image.set_colorkey((0, 0, 0), RLEACCEL)
         else:
             self.image = pygame.Surface((50, 50))
@@ -63,7 +63,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
         if Path('jet.png').is_file():
-            self.image = pygame.transform.scale(pygame.image.load('./Icons/jet.png'), (40, 40)).convert()
+            self.image = pygame.transform.scale(pygame.image.load('jet.png'), (40, 40)).convert()
             self.image.set_colorkey((255, 255, 255), RLEACCEL)
         else:
             self.image = pygame.Surface((50, 50))
