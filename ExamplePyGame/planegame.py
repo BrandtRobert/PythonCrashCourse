@@ -1,15 +1,12 @@
 # import the pygame module
 import pygame
-from ExamplePyGame import Enemy
-from ExamplePyGame import Player
-from ExamplePyGame import Cloud
 from pygame.locals import *
 from pathlib import Path
 import random
 
 # initialize pygame
 pygame.init()
-
+clock = pygame.time.Clock()
 # create the screen object
 # here we pass it a size of 800x600
 screen_height = 800
@@ -182,5 +179,6 @@ while running:
             screen.blit(entity.image, entity.rect)
     # Update the display
     pygame.display.flip()
+    clock.tick(30)
 
 
