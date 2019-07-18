@@ -3,7 +3,10 @@ from pygame.locals import *
 import math
 import random
 
+
 pygame.init()
+default_font = pygame.font.get_default_font()
+font16 = pygame.font.Font(default_font, 16)
 
 clock = pygame.time.Clock()
 
@@ -30,9 +33,9 @@ class Player(pygame.sprite.Sprite):
         if pressed_keys[K_UP]:
             new_x = self.movement_speed * math.sin(math.radians(self.rotation))
             new_y = self.movement_speed * math.cos(math.radians(self.rotation))
-            if self.rect.x - new_x < 0 or self.rect.x - new_x > screen_width:
+            if self.rect.x - new_x <= -5 or self.rect.x - new_x >= screen_width - 5:
                 return
-            if self.rect.y - new_y < 0 or self.rect.y - new_y > screen_height:
+            if self.rect.y - new_y <= -5 or self.rect.y - new_y >= screen_height - 5:
                 return
             self.rect.move_ip(-new_x, -new_y)
         if pressed_keys[K_RIGHT]:
@@ -80,6 +83,7 @@ class Asteroid(pygame.sprite.Sprite):
         direction_x = (screen_width // 2 - position[0])
         direction_y = (screen_height // 2 - position[1])
         magnitude = math.sqrt((direction_x ** 2) + (direction_y ** 2))
+        magnitude = 1 if magnitude == 0 else magnitude
         self.direction = (direction_x / magnitude, direction_y / magnitude)
         self.movement_speed = 4
 
@@ -107,14 +111,33 @@ class Asteroid(pygame.sprite.Sprite):
         size = self.health_to_dimensions()
         self.image = pygame.transform.scale(self.image, size)
 
+def get_new_random_asteroid_pos():
+    x_direction = random.randint(0, 2)
+    y_direction = random.randint(0, 2)
+
+    if x_direction == 1:
+        rand_x = random.randint(screen_width, screen_width + 100)
+    elif x_direction == 2:
+        rand_x = random.randint(-100, 0)
+    else:
+        rand_x = screen_width // random.randint(1, 5)
+    if y_direction == 1:
+        rand_y = random.randint(screen_height, screen_height + 100)
+    elif y_direction == 2:
+        rand_y = random.randint(-100, 0)
+    else:
+        rand_y = screen_height // random.randint(1, 5)
+    return rand_x, rand_y
+
+
+screen = pygame.display.set_mode((800, 600))
+
 def game_loop():
     ADD_ASTEROID = pygame.USEREVENT + 1
     pygame.time.set_timer(ADD_ASTEROID, 2000)
-
     player = Player()
     bullets = pygame.sprite.Group()
     asteroids = pygame.sprite.Group()
-    screen = pygame.display.set_mode((800, 600))
     running = True
     # make a limit on asteroids
 
@@ -130,23 +153,14 @@ def game_loop():
                     bullet = Bullet(pos, angle)
                     bullets.add(bullet)
             elif event.type == ADD_ASTEROID:
-                x_direction = random.randint(0, 2)
-                y_direction = random.randint(0, 2)
-
-                if x_direction == 1:
-                    rand_x = random.randint(screen_width, screen_width + 100)
-                elif x_direction == 2:
-                    rand_x = random.randint(-100, 0)
-                else:
-                    rand_x = screen_width // random.randint(1, 5)
-                if y_direction == 1:
-                    rand_y = random.randint(screen_height, screen_height + 100)
-                elif y_direction == 2:
-                    rand_y = random.randint(-100, 0)
-                else:
-                    rand_y = screen_height // random.randint(1, 5)
-                asteroid = Asteroid((rand_x, rand_y), health=random.randint(1,5))
-                asteroids.add(asteroid)
+                good_position = False
+                while not good_position:
+                    rand_x, rand_y = get_new_random_asteroid_pos()
+                    p_x, p_y = player.get_center()
+                    if math.fabs(p_x - rand_x) < 15 or math.fabs(p_y - rand_y) < 15:
+                        asteroid = Asteroid((rand_x, rand_y), health=random.randint(1, 5))
+                        asteroids.add(asteroid)
+                        good_position = True
 
         pressed_keys = pygame.key.get_pressed()
         player.update(pressed_keys)
@@ -173,15 +187,24 @@ def game_loop():
         pygame.display.flip()
         clock.tick(60)
 
-# def replay_screen():
-#     while True:
-#         for event in pygame.event.get():
-#             if event.type == QUIT:
-#                 return True
 
+def replay_screen():
+    text = font16.render("Game over - press space to start over", True, (0, 0, 0), None)
+    while True:
+        for event in pygame.event.get():
+            if event.type == QUIT:
+                exit(0)
+            elif event.type == KEYDOWN:
+                if event.key == K_SPACE:
+                    return False
+        rect = text.get_rect()
+        rect.center = (screen_width // 2, screen_height // 2)
+        screen.fill((255, 255, 255))
+        screen.blit(text, rect)
+        pygame.display.flip()
 
 
 game_done = False
 while not game_done:
     game_loop()
-    # game_done = replay_screen()
+    game_done = replay_screen()
