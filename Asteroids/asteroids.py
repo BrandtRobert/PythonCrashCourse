@@ -5,8 +5,11 @@ import random
 
 pygame.init()
 
+clock = pygame.time.Clock()
+
 screen_width = 800
 screen_height = 600
+
 
 class Player(pygame.sprite.Sprite):
 
@@ -140,5 +143,5 @@ while running:
         screen.blit(asteroid.image, asteroid.rect)
     pygame.sprite.groupcollide(bullets, asteroids, True, True)
     screen.blit(player.rotated_image, player.rect)
-
     pygame.display.flip()
+    clock.tick(30)
