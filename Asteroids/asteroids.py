@@ -140,7 +140,7 @@ def game_loop():
     asteroids = pygame.sprite.Group()
     running = True
     # make a limit on asteroids
-
+    player_points = 0
     while running:
         for event in pygame.event.get():
             if event.type == QUIT:
@@ -153,14 +153,10 @@ def game_loop():
                     bullet = Bullet(pos, angle)
                     bullets.add(bullet)
             elif event.type == ADD_ASTEROID:
-                good_position = False
-                while not good_position:
-                    rand_x, rand_y = get_new_random_asteroid_pos()
-                    p_x, p_y = player.get_center()
-                    if math.fabs(p_x - rand_x) < 15 or math.fabs(p_y - rand_y) < 15:
-                        asteroid = Asteroid((rand_x, rand_y), health=random.randint(1, 5))
-                        asteroids.add(asteroid)
-                        good_position = True
+                rand_x, rand_y = get_new_random_asteroid_pos()
+                asteroid = Asteroid((rand_x, rand_y), health=random.randint(1, 5))
+                asteroids.add(asteroid)
+
 
         pressed_keys = pygame.key.get_pressed()
         player.update(pressed_keys)
@@ -173,6 +169,7 @@ def game_loop():
         for _, asteroid_list in pygame.sprite.groupcollide(bullets, asteroids, True, False).items():
             for asteroid in asteroid_list:
                 asteroid.hit_by_bullet()
+                player_points = player_points + 1
 
         if pygame.sprite.spritecollideany(player,  asteroids):
             running = False
@@ -183,9 +180,11 @@ def game_loop():
         for asteroid in asteroids:
             asteroid.update()
             screen.blit(asteroid.image, asteroid.rect)
+        text = font16.render('Player score {}'.format(player_points), True, (0, 0, 0), None)
+        screen.blit(text, (10, 550))
         screen.blit(player.rotated_image, player.rect)
         pygame.display.flip()
-        clock.tick(60)
+        clock.tick(30)
 
 
 def replay_screen():
