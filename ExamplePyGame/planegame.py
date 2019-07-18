@@ -4,6 +4,7 @@ from ExamplePyGame import Enemy
 from ExamplePyGame import Player
 from ExamplePyGame import Cloud
 from pygame.locals import *
+from pathlib import Path
 import random
 
 # initialize pygame
@@ -29,9 +30,12 @@ class Cloud(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(
             center=(random.randint(820, 900), random.randint(0, 600))
         )
+        self.rect = self.image.get_rect(
+            center=(random.randint(820, 900), random.randint(0, 600))
+        )
 
-    def update(self, lateral, horizontal):
-        self.rect.move_ip(lateral, horizontal)
+    def update(self):
+        self.rect.move_ip(-5, 0)
         if self.rect.right < 0:
             self.kill()
 
@@ -45,14 +49,15 @@ class Enemy(pygame.sprite.Sprite):
         else:
             self.image = pygame.Surface((50, 50))
             self.image.fill((255, 0, 0))
+        # self.surf = pygame.Surface((20, 10))
+        # self.surf.fill((255, 255, 255))
         self.rect = self.image.get_rect(
             center=(820, random.randint(0, 600))
         )
-        # self.speed = random.randint(5, 20)
+        self.speed = random.randint(5, 20)
 
-    def update(self, lateral, horizontal):
-        # self.rect.move_ip(-self.speed, 0)
-        self.rect.move_ip(lateral, horizontal)
+    def update(self):
+        self.rect.move_ip(-self.speed, 0)
         if self.rect.right < 0:
             self.kill()
 
@@ -67,10 +72,17 @@ class Player(pygame.sprite.Sprite):
             self.image = pygame.Surface((50, 50))
             self.image.fill((255, 255, 255))
         self.rect = self.image.get_rect()
-        # self.move_size = 10
+        self.move_size = 10
 
-    def update(self, lateral, vertical):
-        self.rect.move_ip(lateral, vertical)
+    def update(self, pressed_keys):
+        if pressed_keys[K_UP]:
+            self.rect.move_ip(0, -self.move_size)
+        if pressed_keys[K_DOWN]:
+            self.rect.move_ip(0, self.move_size)
+        if pressed_keys[K_LEFT]:
+            self.rect.move_ip(-self.move_size, 0)
+        if pressed_keys[K_RIGHT]:
+            self.rect.move_ip(self.move_size, 0)
         # Keep player on the screen
         if self.rect.left < 0:
             self.rect.left = 0
