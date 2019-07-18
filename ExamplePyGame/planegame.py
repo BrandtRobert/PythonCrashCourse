@@ -18,7 +18,7 @@ pygame.display.set_caption("Plane Game")
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super(Cloud, self).__init__()
-        if Path('./Icons/cloud.png').is_file():
+        if Path('cloud.png').is_file():
             self.image = pygame.transform.scale(pygame.image.load('./Icons/cloud.png'), (100,100)).convert()
             self.image.set_colorkey((255, 255, 255), RLEACCEL)
         else:
@@ -40,7 +40,7 @@ class Cloud(pygame.sprite.Sprite):
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
         super(Enemy, self).__init__()
-        if Path('./Icons/small-plane.png').is_file():
+        if Path('small-plane.png').is_file():
             self.image = pygame.transform.scale(pygame.image.load('./Icons/small-plane.png'), (50, 50)).convert()
             self.image.set_colorkey((0, 0, 0), RLEACCEL)
         else:
@@ -62,7 +62,7 @@ class Enemy(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
-        if Path('./Icons/jet.png').is_file():
+        if Path('jet.png').is_file():
             self.image = pygame.transform.scale(pygame.image.load('./Icons/jet.png'), (40, 40)).convert()
             self.image.set_colorkey((255, 255, 255), RLEACCEL)
         else:
